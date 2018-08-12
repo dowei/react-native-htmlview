@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text,TouchableOpacity} from 'react-native';
 import htmlparser from 'htmlparser2-without-node-native';
 import entities from 'entities';
 
@@ -86,7 +86,7 @@ export default function htmlToElement(rawHtml, customOpts = {}, done) {
 
       if (node.type === 'tag') {
         if (node.name === 'img') {
-          return <Img key={index} attribs={node.attribs} />;
+          return (<TouchableOpacity key={index} onPress={() => opts.navigation.navigate('ImageShow', {'images': [node.attribs.src], 'index': 0})}><Img  attribs={node.attribs} /></TouchableOpacity>);
         }
 
         let linkPressHandler = null;
@@ -137,9 +137,7 @@ export default function htmlToElement(rawHtml, customOpts = {}, done) {
               {opts.bullet}
             </TextComponent>);
           }
-          if (opts.addLineBreaks && index < list.length - 1) {
-            linebreakAfter = opts.lineBreak;
-          }
+          linebreakAfter = opts.lineBreak;
         }
 
         const {NodeComponent, styles} = opts;

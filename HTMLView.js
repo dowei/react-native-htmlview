@@ -6,7 +6,6 @@ import {Linking, Platform, StyleSheet, View, ViewPropTypes} from 'react-native';
 const boldStyle = {fontWeight: '500'};
 const italicStyle = {fontStyle: 'italic'};
 const underlineStyle = {textDecorationLine: 'underline'};
-const strikethroughStyle = {textDecorationLine: 'line-through'};
 const codeStyle = {fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace'};
 
 const baseStyles = StyleSheet.create({
@@ -15,8 +14,6 @@ const baseStyles = StyleSheet.create({
   i: italicStyle,
   em: italicStyle,
   u: underlineStyle,
-  s: strikethroughStyle,
-  strike: strikethroughStyle,
   pre: codeStyle,
   code: codeStyle,
   a: {
@@ -42,8 +39,8 @@ const htmlToElementOptKeys = [
 ];
 
 class HtmlView extends PureComponent {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       element: null,
     };
@@ -55,8 +52,8 @@ class HtmlView extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.value !== nextProps.value || this.props.stylesheet !== nextProps.stylesheet || this.props.textComponentProps !== nextProps.textComponentProps) {
-      this.startHtmlRender(nextProps.value, nextProps.stylesheet, nextProps.textComponentProps);
+    if (this.props.value !== nextProps.value || this.props.stylesheet !== nextProps.stylesheet) {
+      this.startHtmlRender(nextProps.value, nextProps.stylesheet);
     }
   }
 
@@ -64,7 +61,7 @@ class HtmlView extends PureComponent {
     this.mounted = false;
   }
 
-  startHtmlRender(value, style, textComponentProps) {
+  startHtmlRender(value, style) {
     const {
       addLineBreaks,
       onLinkPress,
@@ -72,6 +69,7 @@ class HtmlView extends PureComponent {
       stylesheet,
       renderNode,
       onError,
+      navigation
     } = this.props;
 
     if (!value) {
@@ -79,6 +77,7 @@ class HtmlView extends PureComponent {
     }
 
     const opts = {
+      navigation,
       addLineBreaks,
       linkHandler: onLinkPress,
       linkLongPressHandler: onLinkLongPress,
@@ -91,10 +90,6 @@ class HtmlView extends PureComponent {
         opts[key] = this.props[key];
       }
     });
-
-    if (textComponentProps) {
-      opts.textComponentProps = textComponentProps;
-    }
 
     htmlToElement(value, opts, (err, element) => {
       if (err) {
@@ -154,7 +149,7 @@ HtmlView.defaultProps = {
   onLinkPress: url => Linking.openURL(url),
   onLinkLongPress: null,
   onError: console.error.bind(console),
-  RootComponent: element => <View {...element} />, // eslint-disable-line react/display-name
+  RootComponent: View,
 };
 
 export default HtmlView;
