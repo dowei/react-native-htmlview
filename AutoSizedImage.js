@@ -4,8 +4,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-const {width} = Dimensions.get('window');
-
+const width = Dimensions.get('window').width - 20;
 const baseStyle = {
   backgroundColor: 'transparent',
 };
